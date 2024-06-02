@@ -54,7 +54,7 @@ class ListClients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            EightyNine\ExcelImport\ExcelImportAction::make()
+            \EightyNine\ExcelImport\ExcelImportAction::make()
                 ->color("primary"),
             Actions\CreateAction::make(),
         ];
