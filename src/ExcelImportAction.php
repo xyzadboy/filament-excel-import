@@ -15,6 +15,8 @@ class ExcelImportAction extends Action
 
     protected ?string $disk = null;
 
+    protected string | Closure $visibility = 'public';
+
     public function use(string $class = null, ...$attributes): static
     {
         $this->importClass = $class ?: DefaultImport::class;
@@ -26,6 +28,13 @@ class ExcelImportAction extends Action
     protected function getDisk()
     {
         return $this->disk ?: config('filesystems.default');
+    }
+
+    public function visibility(string | Closure | null $visibility): static
+    {
+        $this->visibility = $visibility;
+
+        return $this;
     }
 
     public static function getDefaultName(): ?string
@@ -57,6 +66,7 @@ class ExcelImportAction extends Action
                 })
                 ->default(1)
                 ->disk($this->getDisk())
+                ->visibility($this->visibility)
                 ->columns()
                 ->required(),
         ];
