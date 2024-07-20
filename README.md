@@ -136,6 +136,26 @@ You can customise the form by using the `beforeUploadField` and `afterUploadFiel
     }
 ```
 
+### Custom Upload Disk
+To use a custom upload disk, you can publish the config file and customise the upload_disk config.
+
+```bash
+php artisan vendor:publish --tag=excel-import-config
+```
+
+Then in your config file, you can customise the upload_disk config.
+
+```php
+return [
+    /**
+     * File upload path
+     * 
+     * Customise the path where the file will be uploaded to, 
+     * if left empty, config('filesystems.default') will be used
+     */
+    'upload_disk' => 's3',
+];
+
 ### Performing Actions Before and After Import
 
 You can perform actions before and after import by using the beforeImport and afterImport closures.

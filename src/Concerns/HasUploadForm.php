@@ -17,7 +17,7 @@ trait HasUploadForm
     protected ?Closure $uploadField = null;
 
     protected string | Closure $visibility = 'public';
-    
+
 
     public function uploadField(Closure $closure): static
     {
@@ -57,8 +57,8 @@ trait HasUploadForm
             $formFields = $this->beforeUploadFieldFormFields;
         }
         $formFields[] = $this->uploadField ?
-                call_user_func($this->uploadField, $this->getUploadField()) :
-                $this->getUploadField();
+            call_user_func($this->uploadField, $this->getUploadField()) :
+            $this->getUploadField();
 
         if ($this->afterUploadFieldFormFields) {
             $formFields = array_merge($formFields, $this->afterUploadFieldFormFields);
@@ -94,7 +94,8 @@ trait HasUploadForm
             })
             ->default(1)
             ->storeFiles($this->storeFiles)
-            ->disk(fn () => $this->disk ?: config('filesystems.default'))
+            ->disk(fn () => $this->disk ?: (config('excel-import.upload_disk') ?:
+                    config('filesystems.default')))
             ->visibility($this->visibility)
             ->columns()
             ->required();
