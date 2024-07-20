@@ -81,6 +81,7 @@ You can use a closure to process the collection after it has been imported.
             Actions\CreateAction::make(),
         ];
     }
+```
 
 #### Using your own Import class
 
