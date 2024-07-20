@@ -116,7 +116,6 @@ You can customise the form by using the `beforeUploadField` and `afterUploadFiel
                     ->label("Some other label")
                 )
                 // Use the additional form fields data
-
                 ->beforeImport(function (array $data, $livewire, $excelImportAction) {
                     $defaultStatus = $data['default_status'];
                     $defaultPassword = $data['default_password'];
@@ -155,6 +154,7 @@ return [
      */
     'upload_disk' => 's3',
 ];
+```
 
 ### Performing Actions Before and After Import
 
