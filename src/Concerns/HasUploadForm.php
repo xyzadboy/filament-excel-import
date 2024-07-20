@@ -3,8 +3,10 @@
 namespace EightyNine\ExcelImport\Concerns;
 
 use Closure;
+use EightyNine\ExcelImport\ValidationImport;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
+use Maatwebsite\Excel\Facades\Excel;
 
 trait HasUploadForm
 {
@@ -18,6 +20,17 @@ trait HasUploadForm
 
     protected string | Closure $visibility = 'public';
 
+    protected array $validationRules = [];
+
+    protected bool $validate = false;
+
+    public function validateUsing(array $rules): static
+    {
+        $this->validationRules = $rules;
+        $this->validate = true;
+
+        return $this;
+    }
 
     public function uploadField(Closure $closure): static
     {
@@ -95,9 +108,21 @@ trait HasUploadForm
             ->default(1)
             ->storeFiles($this->storeFiles)
             ->disk(fn () => $this->disk ?: (config('excel-import.upload_disk') ?:
-                    config('filesystems.default')))
+                config('filesystems.default')))
             ->visibility($this->visibility)
+            ->rules($this->validationRules())
             ->columns()
             ->required();
+    }
+
+    public function validationRules(): array
+    {
+        $rules = [];
+        if($this->validate) {
+            $rules[] = fn (): Closure => function (string $attribute, $value, Closure $fail) {
+                Excel::import(new ValidationImport($fail, $this->validationRules), $value);
+            };
+        }
+        return $rules;
     }
 }

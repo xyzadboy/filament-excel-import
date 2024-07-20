@@ -11,6 +11,7 @@ class ExcelImportAction extends Action
 {
     use Concerns\HasUploadForm,
         Concerns\HasFormActionHooks,
+        Concerns\HasCustomCollectionMethod,
         Concerns\CanCustomiseActionSetup;
 
     protected string $importClass = DefaultImport::class;
@@ -59,13 +60,6 @@ class ExcelImportAction extends Action
             ->action('importData');
     }
 
-    /**
-     * Import data function.
-     *
-     * @param  array  $data The data to import.
-     * @param $livewire The Livewire instance.
-     * @return bool Returns true if the import was successful, false otherwise.
-     */
     private function importData(): Closure
     {
         return function (array $data, $livewire): bool {
@@ -77,6 +71,14 @@ class ExcelImportAction extends Action
                 $this->importClassAttributes,
                 $this->additionalData
             );
+
+            if(method_exists($importObject, 'setAdditionalData')) {
+                $importObject->setAdditionalData($this->additionalData);
+            }
+
+            if(method_exists($importObject, 'setCollectionMethod')) {
+                $importObject->setCollectionMethod($this->collectionMethod);
+            }
 
             Excel::import($importObject, $data['upload']);
 

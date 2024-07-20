@@ -63,15 +63,34 @@ class ListClients extends ListRecords
 
 ```
 
-### Custom Import
+### Customise Import Process
 
-If you wish to use your own import class to change the import procedure, you can use your own Import class.
+#### Using a closure
+You can use a closure to process the collection after it has been imported.
+
+```php
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->processCollectionUsing(function (string $modelClass, Collection $collection) {
+                    // Do some stuff with the collection
+                    return $collection;
+                }),
+            Actions\CreateAction::make(),
+        ];
+    }
+
+#### Using your own Import class
+
+If you wish to use your own import class to change the import procedure, you can create your own Import class.
 
 ```bash
 php artisan make:import MyClientImport
 ```
 
-Then in your action use your client imeport class
+Then in your action use your client import class
 
 ```php
 
@@ -177,6 +196,26 @@ You can perform actions before and after import by using the beforeImport and af
                 ->afterImport(function ($data, $livewire, $excelImportAction) {
                     // Perform actions after import
                 }),
+            Actions\CreateAction::make(),
+        ];
+    }
+```
+
+### Data Validation
+
+You can validate the data before importing by using the `validateUsing` method. This method accepts an array of rules that will be used to validate the data. You can use all the rules from the Laravel validation system.
+
+```php
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->validateUsing([
+                    'name' => 'required',
+                    'email' => 'required|email',
+                    'phone' => ['required','numeric'],
+                ]),
             Actions\CreateAction::make(),
         ];
     }
