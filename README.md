@@ -86,6 +86,31 @@ Then in your action use your client imeport class
     }
 ```
 
+### Performing Actions Before and After Import
+
+You can perform actions before and after import by using the beforeImport and afterImport closures.
+
+`$data` is the data that is submitted via the form, meaning the file upload is also available in `$data['upload']`, and `$livewire` is the Livewire instance that the action is being performed on (in this case, the ListClients class).
+
+```php
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->slideOver()
+                ->color("primary")
+                ->use(App\Imports\MyClientImport::class)
+                ->beforeImport(function ($data, $livewire) {
+                    // Perform actions before import
+                })
+                ->afterImport(function ($data, $livewire) {
+                    // Perform actions after import
+                }),
+            Actions\CreateAction::make(),
+        ];
+    }
+```
 ## Testing
 
 ```bash
