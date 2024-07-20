@@ -72,6 +72,7 @@ php artisan make:import MyClientImport
 ```
 
 Then in your action use your client imeport class
+
 ```php
 
     protected function getHeaderActions(): array
@@ -81,6 +82,55 @@ Then in your action use your client imeport class
                 ->slideOver()
                 ->color("primary")
                 ->use(App\Imports\MyClientImport::class),
+            Actions\CreateAction::make(),
+        ];
+    }
+```
+
+### Form Customisation
+
+You can customise the form by using the `beforeUploadField` and `afterUploadField` methods. These methods accept an array of fields that will be added to the form before and after the upload field. You can also use the `uploadField` method to customise the upload field.
+
+```php
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \EightyNine\ExcelImport\ExcelImportAction::make()
+                ->slideOver()
+                ->color("primary")
+                ->use(App\Imports\MyClientImport::class)
+                // Add fields before the upload field
+                ->beforeUploadField([
+                    TextInput::make('default_password'),
+                    TextInput::make('default_status'),
+                ])
+                // Or add fields after the upload field
+                ->afterUploadField([
+                    TextInput::make('default_password'),
+                    TextInput::make('default_status'),
+                ])
+                // Or customise the upload field
+                ->uploadField(
+                    fn ($upload) => $upload
+                    ->label("Some other label")
+                )
+                // Use the additional form fields data
+
+                ->beforeImport(function (array $data, $livewire, $excelImportAction) {
+                    $defaultStatus = $data['default_status'];
+                    $defaultPassword = $data['default_password'];
+
+                    // When adding the additional data, the data will be merged with 
+                    // the row data when inserting into the database
+                    $excelImportAction->additionalData([
+                        'password' => $defaultPassword,
+                        'status' => $defaultStatus
+                    ]);
+
+                    // Do some other stuff with the data before importing
+                })
+                ,
             Actions\CreateAction::make(),
         ];
     }
@@ -101,16 +151,17 @@ You can perform actions before and after import by using the beforeImport and af
                 ->slideOver()
                 ->color("primary")
                 ->use(App\Imports\MyClientImport::class)
-                ->beforeImport(function ($data, $livewire) {
+                ->beforeImport(function ($data, $livewire, $excelImportAction) {
                     // Perform actions before import
                 })
-                ->afterImport(function ($data, $livewire) {
+                ->afterImport(function ($data, $livewire, $excelImportAction) {
                     // Perform actions after import
                 }),
             Actions\CreateAction::make(),
         ];
     }
 ```
+
 ## Testing
 
 ```bash

@@ -10,14 +10,17 @@ class DefaultImport implements ToCollection, WithHeadingRow
 {
     public function __construct(
         public string $model,
-        public array $attributes = []
+        public array $attributes = [],
+        public array $additionalData = []
     ) {
     }
 
     public function collection(Collection $collection)
     {
         foreach ($collection as $row) {
-            $this->model::create($row->toArray());
+            $data = $row->toArray();
+            $data = array_merge($data, $this->additionalData);
+            $this->model::create($data);
         }
     }
 }
