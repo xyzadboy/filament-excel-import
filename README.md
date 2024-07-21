@@ -7,6 +7,12 @@ This package adds a new feature to your filament resource, allowing you to easil
 
 _This package brings the maatwebsite/laravel-excel functionalities to filament. You can use all the maatwebsite/laravel-excel features in your laravel project_
 
+
+## 🛠️ Be Part of the Journey
+
+Hi, I'm Eighty Nine. I created excel import plugin to solve real problems I faced as a developer. Your sponsorship will allow me to dedicate more time to enhancing these tools and helping more people. [Become a sponsor](https://github.com/sponsors/eighty9nine) and join me in making a positive impact on the developer community.
+
+
 ## Installation
 
 You can install the package via composer:
