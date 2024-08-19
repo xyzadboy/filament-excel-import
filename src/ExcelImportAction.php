@@ -76,7 +76,7 @@ class ExcelImportAction extends Action
                 $importObject->setAdditionalData($this->additionalData);
             }
 
-            if(method_exists($importObject, 'setCollectionMethod')) {
+            if(method_exists($importObject, 'setCollectionMethod') && isset($this->collectionMethod)) {
                 $importObject->setCollectionMethod($this->collectionMethod);
             }
 
