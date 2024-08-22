@@ -18,11 +18,27 @@ trait HasUploadForm
 
     protected ?Closure $uploadField = null;
 
+    protected ?Closure $afterValidationMutator = null;
+
+    protected ?Closure $beforeValidationMutator = null;
+
     protected string | Closure $visibility = 'public';
 
     protected array $validationRules = [];
 
     protected bool $validate = false;
+
+    public function mutateBeforeValidationUsing(Closure $closure): static
+    {
+        $this->beforeValidationMutator = $closure;
+        return $this;
+    }
+
+    public function mutateAfterValidationUsing(Closure $closure): static
+    {
+        $this->afterValidationMutator = $closure;
+        return $this;
+    }
 
     public function validateUsing(array $rules): static
     {
@@ -120,7 +136,14 @@ trait HasUploadForm
         $rules = [];
         if($this->validate) {
             $rules[] = fn (): Closure => function (string $attribute, $value, Closure $fail) {
-                Excel::import(new ValidationImport($fail, $this->validationRules), $value);
+                Excel::import(
+                    new ValidationImport(
+                        $fail, 
+                        $this->validationRules,
+                        $this->afterValidationMutator
+                    ), 
+                    $value
+                );
             };
         }
         return $rules;

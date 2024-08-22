@@ -13,6 +13,7 @@ class ValidationImport implements ToCollection, WithHeadingRow
     public function __construct(
         public Closure $fail,
         public array $rules = [],
+        public ?Closure $beforeValidationMutator
     ) {
     }
 
@@ -21,9 +22,12 @@ class ValidationImport implements ToCollection, WithHeadingRow
         foreach ($collection as $index => $row) {
             $index = $index + 2;
             $data = $row->toArray();
+            $data = isset($this->beforeValidationMutator) ? 
+                call_user_func( $this->beforeValidationMutator, $data ) :
+                $data;
+
             $validator = Validator::make($data, $this->rules);
             if ($validator->fails()) {
-                // dd($validator->errors()->getMessages());
                 call_user_func($this->fail, __("excel-import::excel-import.validation_failed", [
                     "row" => $index,
                     "messages" => $this->transformErrors($validator->errors()->getMessages()),

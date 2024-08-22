@@ -72,12 +72,16 @@ class ExcelImportAction extends Action
                 $this->additionalData
             );
 
-            if(method_exists($importObject, 'setAdditionalData')) {
+            if(method_exists($importObject, 'setAdditionalData') && isset($this->additionalData)) {
                 $importObject->setAdditionalData($this->additionalData);
             }
 
             if(method_exists($importObject, 'setCollectionMethod') && isset($this->collectionMethod)) {
                 $importObject->setCollectionMethod($this->collectionMethod);
+            }
+
+            if(method_exists($importObject, 'setAfterValidationMutator' && isset($this->afterValidationMutator))){
+                $importObject->setAfterValidationMutator($this->afterValidationMutator);
             }
 
             Excel::import($importObject, $data['upload']);

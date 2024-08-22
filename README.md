@@ -228,6 +228,29 @@ You can validate the data before importing by using the `validateUsing` method. 
     }
 ```
 
+### Mutating data before and after validation
+In some cases you may want to mutate the data before or after validation, in order to achieve this, you can use `mutateBeforeValidationUsing` and `mutateAfterValidationUsing` functions methods.
+
+```php
+
+    \EightyNine\ExcelImport\ExcelImportAction::make()
+        ->mutateBeforeValidationUsing(function(array $data): array{
+            $data['date'] = Carbon::make((string) str($value)->replace('.', '-'));
+            return $data;
+        })
+        ->validateUsing([
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => ['required','numeric'],
+        ])
+        ->mutateAfterValidationUsing(function(array $data): array{
+            $data['date'] = $data['date']->format('Y-m-d');
+            return $data;
+        }),
+
+```
+
+
 ## Testing
 
 ```bash
